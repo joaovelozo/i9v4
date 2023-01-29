@@ -12,6 +12,7 @@ import 'package:i9/src/screens/checkout/cubit/shop_cart_cubit.dart';
 import 'package:i9/src/screens/checkout/domain/entities/shop_cart_entity.dart';
 import 'package:i9/src/screens/checkout/formas_pagamento_widget.dart';
 import 'package:i9/src/screens/checkout/lista_produtos_shop.dart';
+import 'package:i9/src/screens/home/home.dart';
 
 class ShopCartScreen extends StatefulWidget {
   final Cliente? client;
@@ -185,7 +186,11 @@ class _ShopCartScreenState extends State<ShopCartScreen> {
                                           if (hasDispatched) {
                                             await comum.showMessage(
                                                 contexts, 'Pedido Salvo');
-                                            Navigator.of(contexts).pop();
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const HomeScreen()));
                                           }
                                         } else {
                                           comum.showMessage(context,

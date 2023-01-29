@@ -5,6 +5,7 @@ import 'package:i9/src/components/list.dart';
 import 'package:i9/src/components/loading.dart';
 import 'package:i9/src/components/search.dart';
 import 'package:i9/src/widget/alert.dart';
+import 'package:i9/src/screens/home/home.dart';
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -46,7 +47,14 @@ class _ClientScreenState extends State<ClientScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Clientes'),
-          automaticallyImplyLeading: false,
+          leading: new IconButton(
+              icon: new Icon(Icons.arrow_back, color: Colors.orange),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              }),
           actions: <Widget>[
             IconButton(
                 onPressed: () {
