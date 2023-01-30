@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {}
 
     // Configura a rotina para executar novamente em 5 minutos
-    Timer(Duration(minutes: 10), atualizar);
+    Timer(Duration(minutes: 5), atualizar);
   }
 
   setActualPage(page) {

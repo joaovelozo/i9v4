@@ -9,7 +9,7 @@ class ComumShop {
   mensagem(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: const Duration(milliseconds: 3500),
+        duration: const Duration(milliseconds: 50),
         content: Text(msg),
         action: SnackBarAction(
           label: 'Aviso',

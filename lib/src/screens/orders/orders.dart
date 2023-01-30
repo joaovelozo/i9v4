@@ -10,6 +10,7 @@ import 'package:i9/src/screens/checkout/shop_cart_screen.dart';
 import 'package:i9/src/screens/clients/client.dart';
 import 'package:i9/src/screens/orders/cubit/list_order_cubit.dart';
 
+import '../auth/loginScreen.dart';
 import '../checkout/cubit/shop_cart_cubit.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -50,6 +51,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Voltar'),
+          leading: new IconButton(
+              icon: new Icon(Icons.arrow_back, color: Colors.orange),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ClientScreen()),
+                );
+              }),
+          actions: <Widget>[
+            IconButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.exit_to_app))
+          ],
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[

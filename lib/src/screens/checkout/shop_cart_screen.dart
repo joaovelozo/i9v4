@@ -13,6 +13,8 @@ import 'package:i9/src/screens/checkout/domain/entities/shop_cart_entity.dart';
 import 'package:i9/src/screens/checkout/formas_pagamento_widget.dart';
 import 'package:i9/src/screens/checkout/lista_produtos_shop.dart';
 import 'package:i9/src/screens/home/home.dart';
+import 'package:i9/src/screens/orders/cubit/list_order_cubit.dart';
+import 'package:i9/src/screens/orders/orders.dart';
 
 class ShopCartScreen extends StatefulWidget {
   final Cliente? client;
@@ -189,8 +191,14 @@ class _ShopCartScreenState extends State<ShopCartScreen> {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const HomeScreen()));
+                                                  builder: (context) =>
+                                                      BlocProvider(
+                                                    create: (context) =>
+                                                        ListOrderCubit()
+                                                          ..getLocarOrder(),
+                                                    child: const OrdersScreen(),
+                                                  ),
+                                                ));
                                           }
                                         } else {
                                           comum.showMessage(context,
