@@ -27,12 +27,14 @@ class ShopCartCubit extends Cubit<ShopCartState> {
   }) async {
     DateTime date = DateTime.now();
     emit(ShopCartLoading());
+    var prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString('token') ?? '';
     if (order == null) {
       cartEntity = ShopCartEntity(
         idPedidoApp: Uuid().v1(),
         idCliente: cliente!.id_cliente!,
         idEmpresa: cliente.id_empresa!,
-        token: "c8c8cf52-5c11-11ec-bf63-0242ac130002",
+        token: token,
         nome: cliente.nome!,
         cpfCnpj: cliente.cpf_cnpj!,
         celular: cliente.celular!,
@@ -88,7 +90,9 @@ class ShopCartCubit extends Cubit<ShopCartState> {
           total: oldItem!.total + (newItem.precoUnitario * newItem.qtde),
         );
         newUpdateItem = state.cart.item?.map((element) {
-          return element.idProduto == updateItem.idProduto ? updateItem : element;
+          return element.idProduto == updateItem.idProduto
+              ? updateItem
+              : element;
         }).toList();
       } else {
         newUpdateItem.add(newItem);
@@ -142,19 +146,24 @@ class ShopCartCubit extends Cubit<ShopCartState> {
     }
   }
 
-  Future<bool> saveLocalOrder(String observacao, String idFormaPagamento) async {
+  Future<bool> saveLocalOrder(
+      String observacao, String idFormaPagamento) async {
     var prefs = await SharedPreferences.getInstance();
     var state = this.state;
     if (state is ShopCartLoaded) {
       var orderUpdated = state.cart.copyWith(observacao: observacao);
       if (prefs.containsKey('pedidos')) {
         List<String>? pedidos = prefs.getStringList('pedidos');
-        List<ShopCartEntity> listShopCart = pedidos!.map((e) => ShopCartEntity.fromJson(e)).toList();
+        List<ShopCartEntity> listShopCart =
+            pedidos!.map((e) => ShopCartEntity.fromJson(e)).toList();
 
-        if (listShopCart.any((element) => element.idPedidoApp == orderUpdated.idPedidoApp)) {
+        if (listShopCart.any(
+            (element) => element.idPedidoApp == orderUpdated.idPedidoApp)) {
           listShopCart
               .map(
-                (e) => e.idPedidoApp == orderUpdated.idPedidoApp ? orderUpdated : e,
+                (e) => e.idPedidoApp == orderUpdated.idPedidoApp
+                    ? orderUpdated
+                    : e,
               )
               .toList();
         } else {
@@ -163,7 +172,9 @@ class ShopCartCubit extends Cubit<ShopCartState> {
 
         var newOrderList = listShopCart
             .map(
-              (e) => e.idPedidoApp == orderUpdated.idPedidoApp ? orderUpdated.toJson() : e.toJson(),
+              (e) => e.idPedidoApp == orderUpdated.idPedidoApp
+                  ? orderUpdated.toJson()
+                  : e.toJson(),
             )
             .toList();
 
@@ -185,7 +196,8 @@ class ShopCartCubit extends Cubit<ShopCartState> {
 
     if (prefs.containsKey('pedidos')) {
       List<String>? a = prefs.getStringList('pedidos');
-      List<ShopCartEntity> listShopCart = a!.map((e) => ShopCartEntity.fromJson(e)).toList();
+      List<ShopCartEntity> listShopCart =
+          a!.map((e) => ShopCartEntity.fromJson(e)).toList();
       return listShopCart;
     } else {
       return [];
