@@ -28,6 +28,13 @@ class _CartScreenState extends State<CartScreen> {
   int itemQuantity = 1;
   bool isPromoValue = false;
   NumberFormat formatacao = NumberFormat.simpleCurrency(locale: 'pt-BR');
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = "0"; // Setting the initial value for the field.
+  }
 
   void incrementItem() {
     setState(() {
@@ -166,6 +173,7 @@ class _CartScreenState extends State<CartScreen> {
                 },
               ),
               //Texto Clicavél
+
               Text(
                 '${itemQuantity.toString()}',
                 textAlign: TextAlign.center,
