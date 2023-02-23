@@ -7,6 +7,7 @@ import 'package:i9/src/screens/checkout/cubit/shop_cart_cubit.dart';
 import 'package:i9/src/screens/checkout/domain/entities/shop_item_entity.dart';
 import 'package:i9/src/screens/orders/orders.dart';
 import 'package:intl/intl.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:uuid/uuid.dart';
 
 class CartScreen extends StatefulWidget {
@@ -165,6 +166,7 @@ class _CartScreenState extends State<CartScreen> {
                   decrementItem();
                 },
               ),
+              //Texto Clicavél
               Text(
                 '${itemQuantity.toString()}',
                 textAlign: TextAlign.center,
