@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:i9/src/models/produtos.dart';
@@ -27,24 +28,25 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   int itemQuantity = 1;
   bool isPromoValue = false;
+  bool isValidQuantity = true;
   NumberFormat formatacao = NumberFormat.simpleCurrency(locale: 'pt-BR');
-  TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.text = "0"; // Setting the initial value for the field.
-  }
+  TextEditingController _textEditingController = TextEditingController(text: '1');
 
   void incrementItem() {
     setState(() {
       itemQuantity++;
+      _textEditingController.value = TextEditingValue(text: itemQuantity.toString());
+      itemQuantity == 0 ? isValidQuantity = false : isValidQuantity = true;
     });
   }
 
   void decrementItem() {
     setState(() {
-      if (itemQuantity > 0) itemQuantity--;
+      if (itemQuantity > 0) {
+        itemQuantity--;
+        _textEditingController.value = TextEditingValue(text: itemQuantity.toString());
+        itemQuantity == 0 ? isValidQuantity = false : isValidQuantity = true;
+      }
     });
   }
 
@@ -120,12 +122,13 @@ class _CartScreenState extends State<CartScreen> {
               SizedBox(height: 10.0),
               Center(
                 child: Text(
-                    "${formatacao.format(double.parse(widget.produto.preco_a_vista))}",
-                    style: TextStyle(
-                      color: Color(0xFF575E67),
-                      fontFamily: 'Varela',
-                      fontSize: 24.0,
-                    )),
+                  "${formatacao.format(double.parse(widget.produto.preco_a_vista))}",
+                  style: TextStyle(
+                    color: Color(0xFF575E67),
+                    fontFamily: 'Varela',
+                    fontSize: 24.0,
+                  ),
+                ),
               ),
             ],
           ),
@@ -149,8 +152,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
               SizedBox(height: 10.0),
               Center(
-                child: Text(
-                    "${formatacao.format(double.parse(widget.produto.preco_promocional))}",
+                child: Text("${formatacao.format(double.parse(widget.produto.preco_promocional))}",
                     style: TextStyle(
                       color: Color(0xFF575E67),
                       fontFamily: 'Varela',
@@ -172,17 +174,44 @@ class _CartScreenState extends State<CartScreen> {
                   decrementItem();
                 },
               ),
-              //Texto Clicavél
-
-              Text(
-                '${itemQuantity.toString()}',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Varela',
-                  fontSize: 30,
-                  color: isPromoValue
-                      ? Color.fromARGB(255, 0, 109, 85)
-                      : Color(0xFFF17532),
+              SizedBox(
+                height: 60,
+                width: 150,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: _textEditingController,
+                  onChanged: (value) {
+                    var intValue = int.tryParse(value);
+                    if (intValue?.isFinite == true && intValue != 0) {
+                      setState(() {
+                        itemQuantity = intValue!;
+                        isValidQuantity = true;
+                      });
+                    } else {
+                      setState(() {
+                        isValidQuantity = false;
+                      });
+                    }
+                  },
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isPromoValue ? Color.fromARGB(255, 0, 109, 85) : Color(0xFFF17532),
+                    fontFamily: 'Varela',
+                    fontSize: 30,
+                  ),
+                  cursorColor: isPromoValue ? Color.fromARGB(255, 0, 109, 85) : Color(0xFFF17532),
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: isPromoValue ? Color.fromARGB(255, 0, 109, 85) : Color(0xFFF17532),
+                      ),
+                    ),
+                  ),
+                  enableInteractiveSelection: false,
                 ),
               ),
               FloatingActionButton(
@@ -204,27 +233,29 @@ class _CartScreenState extends State<CartScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF17532),
                 ),
-                onPressed: () async {
-                  await contexts.read<ShopCartCubit>().addItem(
-                        ShopItemEntity(
-                          nameproduct: widget.produto.descricao_pdv,
-                          idPedidoAppDet: Uuid().v1(),
-                          idPedidoApp: '',
-                          idProduto: widget.produto.id_produto,
-                          qtde: itemQuantity,
-                          precoUnitario: getUnitPrice,
-                          desconto: getDesconto,
-                          total: getProdutoValue,
-                          isPricePromotion: isPromoValue,
-                        ),
-                      );
-                  await contexts.read<ShopCartCubit>().saveLocalOrder(
-                        widget.observacao,
-                        widget.comum.paymantGatewayDescription!,
-                      );
+                onPressed: isValidQuantity
+                    ? () async {
+                        await contexts.read<ShopCartCubit>().addItem(
+                              ShopItemEntity(
+                                nameproduct: widget.produto.descricao_pdv,
+                                idPedidoAppDet: Uuid().v1(),
+                                idPedidoApp: '',
+                                idProduto: widget.produto.id_produto,
+                                qtde: itemQuantity,
+                                precoUnitario: getUnitPrice,
+                                desconto: getDesconto,
+                                total: getProdutoValue,
+                                isPricePromotion: isPromoValue,
+                              ),
+                            );
+                        await contexts.read<ShopCartCubit>().saveLocalOrder(
+                              widget.observacao,
+                              widget.comum.paymantGatewayDescription!,
+                            );
 
-                  Navigator.pop(contexts);
-                },
+                        Navigator.pop(contexts);
+                      }
+                    : null,
                 child: Center(
                   child: Text(
                     'Adicionar Ao Carrinho',
