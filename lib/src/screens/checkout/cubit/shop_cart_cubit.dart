@@ -44,6 +44,7 @@ class ShopCartCubit extends Cubit<ShopCartState> {
         subTotal: 0.0,
         dataLancamento: '${date.day}/${date.month}/${date.year}',
         idFormaPagamento: '',
+        observacao: null,
       );
     } else {
       cartEntity = order;

@@ -2,6 +2,7 @@ class ProdutosModel {
   String? id_pedido_app_det;
   String? id_pedido_app;
   String? id_produto;
+  String? observacao;
   int? qtde;
   double? preco_unitario;
   int? desconto;
@@ -17,6 +18,7 @@ class ProdutosModel {
     this.desconto,
     this.total,
     this.isPricePromotion,
+    this.observacao,
   });
   ProdutosModel.fromJson(Map<String, dynamic> json) {
     id_pedido_app_det = json['idPedidoAppDet']?.toString();
@@ -27,6 +29,7 @@ class ProdutosModel {
     desconto = json['desconto']?.toInt();
     total = json['total']?.toDouble();
     isPricePromotion = json['isPricePromotion'];
+    observacao = json['observacao'];
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -38,6 +41,7 @@ class ProdutosModel {
     data['desconto'] = desconto;
     data['total'] = total;
     data['is_price_promotion'] = isPricePromotion;
+    data['observacao'] = observacao;
     return data;
   }
 }
@@ -58,6 +62,7 @@ class pedido_model {
   double? total;
   String? data_lancamento;
   String? id_forma_pagamento;
+  String? observacao;
 
   pedido_model({
     this.id_pedido_app,
@@ -75,6 +80,7 @@ class pedido_model {
     this.total,
     this.data_lancamento,
     this.id_forma_pagamento,
+    this.observacao,
   });
   pedido_model.fromJson(
     Map<String, dynamic> json,
@@ -96,6 +102,7 @@ class pedido_model {
     total = valorTotal; //verificar
     data_lancamento = json['dataLancamento']?.toString();
     id_forma_pagamento = json['idFormaPagamento']?.toString();
+    observacao = json['observacao']?.toString();
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -114,6 +121,7 @@ class pedido_model {
     data['total'] = total;
     data['data_lancamento'] = data_lancamento;
     data['id_forma_pagamento'] = id_forma_pagamento;
+    data['observacao'] = observacao;
     return data;
   }
 }
